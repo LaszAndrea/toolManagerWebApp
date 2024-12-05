@@ -1,5 +1,5 @@
 export interface user {
-    presonId: string,
+    id: string,
     name: string,
     address: string,
 }

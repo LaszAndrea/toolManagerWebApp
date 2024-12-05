@@ -76,11 +76,22 @@
                                     <div *ngIf="f.dateOfPurchase.errors">Date is a required field</div>
                                 </div>
                             </div>
+                            <div *ngIf="addForm.get('state')?.value !== 'Available' && addForm.get('state')?.value !== ''" class="form-group mt-2">
+                                <label for="personId">Select a user</label>
+                                <select class="form-select form-select-sm" name="personId" id="personId" formControlName="personId">
+                                    <option *ngFor="let user of users" [value]="user.fields.Title">{{user.fields.name}}</option>
+                                </select>
+                                <div *ngIf="addForm.get('state')?.value !== 'Available' && addForm.get('state')?.value !== ''">
+                                    <div *ngIf="f.personId.invalid && (f.personId.dirty || f.personId.touched || isSubmitted)" class="text-danger">
+                                        <div *ngIf="f.personId.errors">Selecting a user is a required field</div>
+                                    </div>
+                                </div>
+                            </div>
                             <button type="submit" class="btn btn-primary mt-3"
                                 style="background-color: #41A7C0;">Add</button>
+                                <button class="btn btn-primary mt-3 float-end" style="background-color: #41A7C0;"
+                                routerLink="/">Home page</button>
                         </form>
-                        <button class="btn btn-primary mt-3 float-end" style="background-color: #41A7C0;"
-                        routerLink="/">Home page</button>
                     </div>
                 </div>
             </div>

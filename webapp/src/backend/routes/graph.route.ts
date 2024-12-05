@@ -64,7 +64,9 @@ router.put('/update/:itemId', async (req, res) => {
 
     if (token) {
       const itemId = req.params.itemId;
-      await graphService.updateItemOnList(token, req.body, itemId);
+      console.log("req body", req.body)
+      const item = await graphService.updateItemOnList(token, req.body, itemId);
+      res.send(item);
     } else {
       console.log("updateitem token error");
     }

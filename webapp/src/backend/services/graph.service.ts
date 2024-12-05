@@ -79,9 +79,9 @@ export class GraphService {
 
             const filter = `$filter=startswith(fields/AssetType,'${searched}')`;
             let statusFilter = ''
-            if(url == "/deploy"){
+            if (url == "/deploy") {
                 statusFilter = `and fields/Status ne 'Available'`;
-            }else if(url == "/deposit"){
+            } else if (url == "/deposit") {
                 statusFilter = `and fields/Status eq 'Available'`;
             }
 
@@ -107,23 +107,50 @@ export class GraphService {
 
             try {
 
-                const response = await axios.post(`https://graph.microsoft.com/v1.0/sites/${siteId}/lists/${listId}/items`, {
-                    fields: {
-                        Title: listItem.id,
-                        Status: listItem.state,
-                        Manufacturer: listItem.manufacturer,
-                        Model: listItem.model,
-                        AssetType: listItem.type,
-                        SerialNumber: listItem.serialNumber,
-                        PurchaseDate: listItem.dateOfPurchase,
-                        PurchasePrice: listItem.price,
-                        photoURL: listItem.photoURL
-                    },
-                }, {
-                    headers: { Authorization: `Bearer ${token}` }
-                });
+                console.log("listitem personid: ", listItem.personId)
 
-                return response.data;
+                if (listItem.personId) {
+
+                    const response = await axios.post(`https://graph.microsoft.com/v1.0/sites/${siteId}/lists/${listId}/items`, {
+                        fields: {
+                            Title: listItem.id,
+                            Status: listItem.state,
+                            Manufacturer: listItem.manufacturer,
+                            Model: listItem.model,
+                            AssetType: listItem.type,
+                            SerialNumber: listItem.serialNumber,
+                            PurchaseDate: listItem.dateOfPurchase,
+                            PurchasePrice: listItem.price,
+                            photoURL: listItem.photoURL,
+                            personIdLookupId: listItem.personId
+                        },
+                    }, {
+                        headers: { Authorization: `Bearer ${token}` }
+                    });
+
+                    return response.data;
+
+                } else {
+
+                    const response = await axios.post(`https://graph.microsoft.com/v1.0/sites/${siteId}/lists/${listId}/items`, {
+                        fields: {
+                            Title: listItem.id,
+                            Status: listItem.state,
+                            Manufacturer: listItem.manufacturer,
+                            Model: listItem.model,
+                            AssetType: listItem.type,
+                            SerialNumber: listItem.serialNumber,
+                            PurchaseDate: listItem.dateOfPurchase,
+                            PurchasePrice: listItem.price,
+                            photoURL: listItem.photoURL,
+                        },
+                    }, {
+                        headers: { Authorization: `Bearer ${token}` }
+                    });
+
+                    return response.data;
+
+                }
             } catch (error) {
                 console.log("additem: axios error", error);
             }
@@ -137,22 +164,44 @@ export class GraphService {
 
             try {
 
-                const response = await axios.patch(`https://graph.microsoft.com/v1.0/sites/${siteId}/lists/${listId}/items/${itemId}`, {
-                    fields: {
-                        Status: listItem.state,
-                        Manufacturer: listItem.manufacturer,
-                        Model: listItem.model,
-                        AssetType: listItem.type,
-                        SerialNumber: listItem.serialNumber,
-                        PurchaseDate: listItem.dateOfPurchase,
-                        PurchasePrice: listItem.price,
-                        photoURL: listItem.photoURL
-                    },
-                }, {
-                    headers: { Authorization: `Bearer ${token}`, 'Content-Type': 'application/json' }
-                });
 
-                return response.data;
+                if (listItem.personId) {
+
+                    const response = await axios.patch(`https://graph.microsoft.com/v1.0/sites/${siteId}/lists/${listId}/items/${itemId}`, {
+                        fields: {
+                            Status: listItem.state,
+                            Manufacturer: listItem.manufacturer,
+                            Model: listItem.model,
+                            AssetType: listItem.type,
+                            SerialNumber: listItem.serialNumber,
+                            PurchaseDate: listItem.dateOfPurchase,
+                            PurchasePrice: listItem.price,
+                            photoURL: listItem.photoURL,
+                            personIdLookupId: listItem.personId
+                        },
+                    }, {
+                        headers: { Authorization: `Bearer ${token}`, 'Content-Type': 'application/json' }
+                    });
+
+                    return response.data;
+                } else {
+                    const response = await axios.patch(`https://graph.microsoft.com/v1.0/sites/${siteId}/lists/${listId}/items/${itemId}`, {
+                        fields: {
+                            Status: listItem.state,
+                            Manufacturer: listItem.manufacturer,
+                            Model: listItem.model,
+                            AssetType: listItem.type,
+                            SerialNumber: listItem.serialNumber,
+                            PurchaseDate: listItem.dateOfPurchase,
+                            PurchasePrice: listItem.price,
+                            photoURL: listItem.photoURL
+                        },
+                    }, {
+                        headers: { Authorization: `Bearer ${token}`, 'Content-Type': 'application/json' }
+                    });
+
+                    return response.data;
+                }
             } catch (error) {
                 console.log("updateItem: axios error", error);
             }

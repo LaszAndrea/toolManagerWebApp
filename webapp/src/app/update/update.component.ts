@@ -5,6 +5,7 @@ import { ActivatedRoute, Router, RouterModule } from '@angular/router';
 import { ToastrService } from 'ngx-toastr';
 import { FrontendService } from '../frontend_service/frontend.service';
 import { STATE_COLUMN_ID, MANUFACTURER_COLUMN_ID, TYPE_COLUMN_ID } from '../choiceURLS';
+import { UserService } from '../frontend_service/user.service';
 
 @Component({
   selector: 'app-update',
@@ -22,6 +23,8 @@ export class UpdateComponent {
   isSubmitted = false;
 
   updatingItem: any;
+  users: any[] = [];
+  currentUserToBeUpdated: any;
 
   constructor(
     private activatedRoute: ActivatedRoute,
@@ -29,6 +32,7 @@ export class UpdateComponent {
     private frontendService: FrontendService,
     private router: Router,
     private toaster: ToastrService,
+    private userService: UserService
   ) {
 
     this.initMsal();
@@ -61,15 +65,25 @@ export class UpdateComponent {
     this.frontendService.gotItem$.subscribe((newItem) => {
       this.updatingItem = newItem;
       if (this.updatingItem.length == 1) {
-        this.initializeForm();
+        this.getUsers();
+        this.getCurrentUser();
+        this.userService.updatePerson$.subscribe((newUser) => {
+          this.currentUserToBeUpdated = newUser;
+          if (this.currentUserToBeUpdated.length == 1) {
+            this.initializeForm();
+          }
+        })
       }
     });
   }
 
+  
   async initializeForm() {
 
     const dateOfPurchase = new Date(this.updatingItem[0].fields.PurchaseDate);
     const formattedDate = dateOfPurchase.toISOString().split('T')[0];
+
+    console.log(this.currentUserToBeUpdated[0].fields.id)
 
     this.updateForm = this.formBuilder.group({
       id: [this.updatingItem[0].fields.Title],
@@ -80,9 +94,24 @@ export class UpdateComponent {
       price: [this.updatingItem[0].fields.PurchasePrice, [Validators.required, Validators.pattern('^[0-9]+$'), Validators.max(1000000)]],
       serialNumber: [this.updatingItem[0].fields.SerialNumber, Validators.required],
       dateOfPurchase: [formattedDate, Validators.required],
-      photoURL: [this.updatingItem[0].fields.photoURL, Validators.required]
+      photoURL: [this.updatingItem[0].fields.photoURL, Validators.required],
+      personId: [this.currentUserToBeUpdated[0].fields.name]
     });
 
+  }
+
+  async getUsers() {
+    await this.userService.getUsers();
+    this.userService.users$.subscribe((newUser) => {
+      this.users = newUser;
+    });
+  }
+
+  async getCurrentUser() {
+    await this.userService.getPersonById(this.updatingItem[0].fields.personIdLookupId);
+    this.userService.updatePerson$.subscribe((newUser) => {
+      this.currentUserToBeUpdated = newUser;
+    });
   }
 
   async getStateChoices() {
@@ -131,7 +160,8 @@ export class UpdateComponent {
       price: formData.price,
       serialNumber: formData.serialNumber,
       dateOfPurchase: formData.dateOfPurchase,
-      photoURL: formData.photoURL
+      photoURL: formData.photoURL,
+      personId: formData.personId
     });
 
     try {

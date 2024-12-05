@@ -7,5 +7,6 @@ export interface toolItem {
     serialNumber: string,
     dateOfPurchase: string,
     price: number,
-    photoURL: string
+    photoURL: string,
+    personId: string
 }

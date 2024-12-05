@@ -5,6 +5,7 @@ import { AccountInfo } from "@azure/msal-browser";
 import { BehaviorSubject } from "rxjs";
 import { BACKEND_URL, MANUFACTURER_COLUMN_ID, STATE_COLUMN_ID, TYPE_COLUMN_ID } from "../choiceURLS";
 import { toolItem } from "src/backend/interfaces/listItem.interface";
+import { user } from "src/backend/interfaces/user.interrface";
 import { response } from "express";
 
 @Injectable({
@@ -28,7 +29,8 @@ export class FrontendService {
         serialNumber: "",
         dateOfPurchase: "",
         price: 0,
-        photoURL: ""
+        photoURL: "",
+        personId: ""
     };
 
     private itemsSubject = new BehaviorSubject<any[]>([]);
@@ -230,6 +232,7 @@ export class FrontendService {
                 (data: any) => {
                     this.availableItems = data.value;
                     this.updateAvailableItems(this.availableItems);
+                    console.log("available items: ", this.availableItems)
                 },
                 (error) => {
                     console.error('error getting available items:', error);
@@ -260,7 +263,7 @@ export class FrontendService {
         }
     }
 
-    async modifyStatusOfItem(itemId: string){
+    async modifyStatusOfItem(itemId: string, userId: string){
 
         const account = this.msalService.instance.getAllAccounts()[0];
 
@@ -272,8 +275,6 @@ export class FrontendService {
             this.gotItem$.subscribe((item) => {
                 if(item.length > 0){
 
-                    console.log("item: ", item[0])
-
                     this.toolItem.id = item[0].fields.Title;
                     this.toolItem.manufacturer = item[0].fields.Manufacturer;
                     this.toolItem.dateOfPurchase = item[0].fields.PurchaseDate;
@@ -283,12 +284,16 @@ export class FrontendService {
                     this.toolItem.serialNumber = item[0].fields.SerialNumber;
                     this.toolItem.state = "Booked";
                     this.toolItem.type = item[0].fields.AssetType;
+                    this.toolItem.personId = userId;
 
                     const headers = new HttpHeaders().set('Authorization', `Bearer ${token}`);
                     this.http.put(`${BACKEND_URL}/update/${item[0].id}`, this.toolItem, { headers }).subscribe({});
 
                 }
             });
+
+            await this.getAvailableItems();
+            console.log("modify available: ", this.availableItems);
 
         }
 

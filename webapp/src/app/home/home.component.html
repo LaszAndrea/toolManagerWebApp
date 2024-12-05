@@ -28,7 +28,7 @@
     </div>
 
     <!--form-->
-    <button class="openForm" (click)="openForm()">+</button>
+    <button type="button" class="openForm" (click)="openForm()">+</button>
 
     <div class="overlay" *ngIf="showForm">
         <div class="form-container">
@@ -106,6 +106,15 @@
                                             <div *ngIf="f.dateOfPurchase.errors">Date is a required field</div>
                                         </div>
                                     </div>
+                                    <div *ngIf="addForm.get('state')?.value !== 'Available' && addForm.get('state')?.value !== ''" class="form-group mt-2">
+                                        <label for="personId">Select a user</label>
+                                        <select class="form-select form-select-sm" name="personId" id="personId" formControlName="personId">
+                                            <option *ngFor="let user of users" [value]="user.fields.Title">{{user.fields.name}}</option>
+                                        </select>
+                                        <div *ngIf="f.personId.invalid && (f.personId.dirty || f.personId.touched || isSubmitted)" class="text-danger">
+                                            <div *ngIf="f.personId.errors">Selecting a user is a required field</div>
+                                        </div>
+                                    </div>
                                     <button type="submit" class="btn btn-primary mt-4"
                                         style="background-color: #41A7C0;">Add</button>
                                         <button type="button" class="btn btn-primary mt-4 float-end" style="background-color: #41A7C0;"
@@ -117,5 +126,33 @@
             </div>
         </div>
     </div>
+
+    <div class="overlay" *ngIf="showUserForm">
+        <div class="form-container">
+            <button type="button" class="btn-close float-end" (click)="closeUserForm()"></button>
+            <div class="container">
+                <div class="row justify-content-center">
+                    <div class="col-md-6 mb-4">
+                            <div class="card-body">
+                                <form [formGroup]="addUser" (ngSubmit)="onSubmitUser()">
+                                    <div class="form-group mt-2">
+                                        <label for="personId">Booking for user</label>
+                                        <select class="form-select form-select-sm" name="type" id="type" formControlName="personId">
+                                            <option *ngFor="let user of users" [value]="user.fields.Title">{{user.fields.name}}</option>
+                                        </select>
+                                        <div *ngIf="f.type.invalid && (f.type.dirty || f.type.touched || isSubmitted)" class="text-danger">
+                                            <div *ngIf="f.type.errors">Type is a required field</div>
+                                        </div>
+                                    </div>
+                                    <button type="submit" class="btn btn-primary mt-4"
+                                        style="background-color: #41A7C0;">Add</button>
+                                </form>
+                            </div>
+                        </div>
+                    </div>
+            </div>
+        </div>
+    </div>
+
         
 </body>

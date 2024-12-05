@@ -5,6 +5,7 @@ import { MANUFACTURER_COLUMN_ID, STATE_COLUMN_ID, TYPE_COLUMN_ID } from '../choi
 import { FormBuilder, FormGroup, ReactiveFormsModule, Validators } from '@angular/forms';
 import { ToastrService } from 'ngx-toastr';
 import { RouterModule } from '@angular/router';
+import { UserService } from '../frontend_service/user.service';
 
 @Component({
   selector: 'app-add-to-list',
@@ -21,7 +22,9 @@ export class AddToListComponent {
   addForm!: FormGroup;
   isSubmitted = false;
 
-  constructor(private frontendService: FrontendService, private formBuilder: FormBuilder, private toaster: ToastrService) {
+  users: any[] = [];
+
+  constructor(private frontendService: FrontendService, private formBuilder: FormBuilder, private toaster: ToastrService, private userService: UserService) {
     this.initializeAll();
     this.addForm = this.formBuilder.group({
       id:[],
@@ -32,7 +35,8 @@ export class AddToListComponent {
       price: ['', [Validators.required, Validators.pattern('^[0-9]+$'),  Validators.max(1000000)]],
       serialNumber: ['', Validators.required],
       dateOfPurchase: ['', Validators.required],
-      photoURL: ['', Validators.required]
+      photoURL: ['', Validators.required],
+      personId: [''],
     });
   }
 
@@ -41,6 +45,7 @@ export class AddToListComponent {
     await this.getStateChoices();
     await this.getManufacturerChoices();
     await this.getTypeChoices();
+    await this.getUsers();
   }
 
   async getStateChoices() {
@@ -61,6 +66,13 @@ export class AddToListComponent {
     this.frontendService.getColumnChoices(TYPE_COLUMN_ID);
     this.frontendService.typeChoices$.subscribe((newTypeChoices) => {
       this.typeChoices = newTypeChoices;
+    });
+  }
+
+  async getUsers() {
+    await this.userService.getUsers();
+    this.userService.users$.subscribe((newUser) => {
+      this.users = newUser;
     });
   }
 
