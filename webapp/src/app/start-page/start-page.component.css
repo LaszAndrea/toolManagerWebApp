@@ -1,0 +1,42 @@
+body{
+    height: 100%;
+    display: flex;
+    justify-content: center;
+}
+
+.cards {
+    display: flex;
+    flex-direction: row;
+    gap: 10%;
+  }
+  
+  .cards .card {
+    margin-top: 17%;
+    margin-bottom: 13%;
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    flex-direction: column;
+    text-align: center;
+    height: 100%;
+    width: 400px;
+    border-radius: 10px;
+    color: white;
+    cursor: pointer;
+    transition: 400ms;
+    background-color: #41A7C0;
+  }
+  
+  .cards .card p.tip {
+    font-size: 1em;
+    font-weight: 700;
+  }
+  
+  .cards .card:hover {
+    transform: scale(1.05, 1.05);
+  }
+  
+  .cards:hover > .card:not(:hover) {
+    filter: blur(10px);
+    transform: scale(0.95, 0.95);
+  }

@@ -1,0 +1,88 @@
+<body>
+    <div class="container mb-5">
+        <div class="row justify-content-center">
+            <div class="col-md-6 mt-4 mb-4">
+                <div class="card">
+                    <div class="card-header text-light" style="background-color: #41A7C0;">
+                        Update tool
+                    </div>
+                    <div class="card-body">
+                        <form  *ngIf="updateForm" [formGroup]="updateForm" (ngSubmit)="onSubmit()">
+                            <div class="form-group mt-3">
+                                <label for="model">Model</label>
+                                <input type="text" class="form-control" id="model" formControlName="model" required>
+                                <div *ngIf="f.model.invalid && (f.model.dirty || f.model.touched || isSubmitted)" class="text-danger">
+                                    <div *ngIf="f.model.errors">Model is a required field</div>
+                                </div>
+                            </div>
+                            <div class="form-group mt-3">
+                                <label for="photoURL">Photo URL</label>
+                                <input type="text" class="form-control" id="photoURL" formControlName="photoURL" required>
+                                <div *ngIf="f.photoURL.invalid && (f.photoURL.dirty || f.photoURL.touched || isSubmitted)" class="text-danger">
+                                    <div *ngIf="f.photoURL.errors">Photo URL is a required field</div>
+                                </div>
+                            </div>
+                            <div class="form-group mt-3">
+                                <label for="manufacturer">Manufacturer</label>
+                                <select class="form-select" name="manufacturer" id="manufacturer"
+                                    formControlName="manufacturer">
+                                    <option *ngFor="let manufacturer of manufacturerChoices" [value]="manufacturer">
+                                        {{manufacturer}}</option>
+                                </select>
+                                <div *ngIf="f.manufacturer.invalid && (f.manufacturer.dirty || f.manufacturer.touched || isSubmitted)"
+                                    class="text-danger">
+                                    <div *ngIf="f.manufacturer.errors">Manufacturer is a required field</div>
+                                </div>
+                            </div>
+                            <div class="form-group mt-3">
+                                <label for="type">Type</label>
+                                <select class="form-select" name="type" id="type" formControlName="type">
+                                    <option *ngFor="let type of typeChoices" [value]="type">{{type}}</option>
+                                </select>
+                                <div *ngIf="f.type.invalid && (f.type.dirty || f.type.touched || isSubmitted)" class="text-danger">
+                                    <div *ngIf="f.type.errors">Type is a required field</div>
+                                </div>
+                            </div>
+                            <div class="form-group mt-3">
+                                <label for="state">State</label>
+                                <select class="form-select" name="state" id="state" formControlName="state">
+                                    <option *ngFor="let state of stateChoices" [value]="state">{{state}}</option>
+                                </select>
+                                <div *ngIf="f.state.invalid && (f.state.dirty || f.state.touched || isSubmitted)" class="text-danger">
+                                    <div *ngIf="f.state.errors">Status is a required field</div>
+                                </div>
+                            </div>
+                            <div class="form-group mt-3">
+                                <label for="price">Price</label>
+                                <input type="price" class="form-control" id="price" formControlName="price" required>
+                                <div *ngIf="f.price.invalid && (f.price.dirty || f.price.touched || isSubmitted)" class="text-danger">
+                                    <div *ngIf="f.price.errors">Price is a required field, and it must be a number</div>
+                                </div>
+                            </div>
+                            <div class="form-group mt-3">
+                                <label for="serialNumber">Serial number</label>
+                                <input type="text" class="form-control" id="serialNumber" formControlName="serialNumber"
+                                    required />
+                                <div *ngIf="f.serialNumber.invalid && (f.serialNumber.dirty || f.serialNumber.touched || isSubmitted)"
+                                    class="text-danger">
+                                    <div *ngIf="f.serialNumber.errors">Serial number is a required field</div>
+                                </div>
+                            </div>
+                            <div class="form-group mt-3">
+                                <label for="dateOfPurchase">Date of Purchase</label>
+                                <input type="date" class="form-control" id="dateOfPurchase"
+                                    formControlName="dateOfPurchase" required />
+                                <div *ngIf="f.dateOfPurchase.invalid && (f.dateOfPurchase.dirty || f.dateOfPurchase.touched || isSubmitted)" class="text-danger">
+                                    <div *ngIf="f.dateOfPurchase.errors">Date is a required field</div>
+                                </div>
+                            </div>
+                            <button type="submit" class="btn btn-primary mt-3"
+                                style="background-color: #41A7C0;">Update</button>
+                            <button type="button" (click)="deleteItem()" class="btn btn-primary mt-3 float-end" style="background-color: #41A7C0;">Delete item</button>
+                        </form>
+                    </div>
+                </div>
+            </div>
+        </div>
+    </div>
+</body>

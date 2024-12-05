@@ -1,0 +1,13 @@
+<body style="border-radius: 150px">
+<div class="d-flex justify-content-center">
+    <nav class="navbar bg-body-tertiary align-items-center" style="padding: 0; border-radius: 150px">
+      <div class="container-fluid" style="padding: 0;">
+        <form class="" role="search">
+          <input #s class="form-control me-2" type="search" placeholder="Keress a listán" aria-label="Search" [(ngModel)]="searched" 
+          (input)="search(searched)" [ngModelOptions]="{standalone: true}">
+        </form>
+      </div>
+    </nav>
+  </div>
+</body>
+  

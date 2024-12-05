@@ -1,0 +1,121 @@
+<body>
+
+    <div id="all" *ngIf="msalService.instance.getAllAccounts().length">
+        <div class="container mb-5">
+            <div class="row justify-content-evenly">
+                <div class="col-sm-5 mb-4 mt-4" *ngFor="let item of items" style="width: 20rem; ">
+                    <div id="cards" class="card text-light h-100" style="background-color: #41A7C0">
+                        <img class="card-img-top" [src]="item.fields.photoURL" style="object-fit: cover; width: 100%; height: 15vw;" alt="Card image cap">
+                        <div class="card-body" style="width: 18rem;">
+                            <div class="card-contents" style="height: 250px; overflow: hidden;">
+                                <h5 class="card-title">{{ item.fields.Model }}</h5>
+                                <h6 class="card-subtitle mb-2 text-white-50">Serial number: {{item.fields.SerialNumber}}</h6>
+                                <p class="card-text">Purchase Date: {{item.fields.PurchaseDate}}</p>
+                                <p class="card-text">Price: {{item.fields.PurchasePrice}} €</p>
+                                <p class="card-text">Manufacturer: {{item.fields.Manufacturer}}</p>
+                            </div>
+                            <p *ngIf="item.fields.Status === 'Available'" (click)="depositItem(item.fields.Title)" class="btn" style="background-color: #498205; color: white">Book item</p>
+                            <p *ngIf="item.fields.Status === 'Booked'" class="btn" style="background-color: #FFEBC0; color: #C7A660">{{item.fields.Status}}</p>
+                            <p *ngIf="item.fields.Status === 'In use'" class="btn" style="background-color: #80C6FF; color: white">{{item.fields.Status}}</p>
+                            <p *ngIf="item.fields.Status === 'Under repair'" class="btn" style="background-color: #CA5010; color: white">{{item.fields.Status}}</p>
+                            <p *ngIf="item.fields.Status === 'Deleted'" class="btn" style="background-color: #FABBC3; color: white">{{item.fields.Status}}</p>
+                            <p class="btn float-end" routerLink="/update/{{item.fields.Title}}" style="background-color: white; color: black">Modify</p>
+                        </div>
+                    </div>
+                </div>
+            </div>
+        </div>
+    </div>
+
+    <!--form-->
+    <button class="openForm" (click)="openForm()">+</button>
+
+    <div class="overlay" *ngIf="showForm">
+        <div class="form-container">
+            <button type="button" class="btn-close float-end" (click)="closeForm()"></button>
+            <div class="container">
+                <div class="row justify-content-center">
+                    <div class="col-md-6 mb-4">
+                            <div class="card-body">
+                                <form [formGroup]="addForm" (ngSubmit)="onSubmit()">
+                                    <div class="form-group">
+                                        <label for="model">Model</label>
+                                        <input type="text" class="form-control form-control-sm" id="model" formControlName="model" required>
+                                        <div *ngIf="f.model.invalid && (f.model.dirty || f.model.touched || isSubmitted)" class="text-danger">
+                                            <div *ngIf="f.model.errors">Model is a required field</div>
+                                        </div>
+                                    </div>
+                                    <div class="form-group mt-2">
+                                        <label for="photoURL">Photo URL</label>
+                                        <input type="text" class="form-control form-control-sm" id="photoURL" formControlName="photoURL" required>
+                                        <div *ngIf="f.photoURL.invalid && (f.photoURL.dirty || f.photoURL.touched || isSubmitted)" class="text-danger">
+                                            <div *ngIf="f.model.errors">Photo URL is a required field</div>
+                                        </div>
+                                    </div>
+                                    <div class="form-group mt-2">
+                                        <label for="manufacturer">Manufacturer</label>
+                                        <select class="form-select form-select-sm" name="manufacturer" id="manufacturer"
+                                            formControlName="manufacturer">
+                                            <option *ngFor="let manufacturer of manufacturerChoices" [value]="manufacturer">
+                                                {{manufacturer}}</option>
+                                        </select>
+                                        <div *ngIf="f.manufacturer.invalid && (f.manufacturer.dirty || f.manufacturer.touched || isSubmitted)"
+                                            class="text-danger">
+                                            <div *ngIf="f.manufacturer.errors">Manufacturer is a required field</div>
+                                        </div>
+                                    </div>
+                                    <div class="form-group mt-2">
+                                        <label for="type">Type</label>
+                                        <select class="form-select form-select-sm" name="type" id="type" formControlName="type">
+                                            <option *ngFor="let type of typeChoices" [value]="type">{{type}}</option>
+                                        </select>
+                                        <div *ngIf="f.type.invalid && (f.type.dirty || f.type.touched || isSubmitted)" class="text-danger">
+                                            <div *ngIf="f.type.errors">Type is a required field</div>
+                                        </div>
+                                    </div>
+                                    <div class="form-group mt-2">
+                                        <label for="state">State</label>
+                                        <select class="form-select form-select-sm" name="state" id="state" formControlName="state">
+                                            <option *ngFor="let state of stateChoices" [value]="state">{{state}}</option>
+                                        </select>
+                                        <div *ngIf="f.state.invalid && (f.state.dirty || f.state.touched || isSubmitted)" class="text-danger">
+                                            <div *ngIf="f.state.errors">Status is a required field</div>
+                                        </div>
+                                    </div>
+                                    <div class="form-group mt-2">
+                                        <label for="price">Price</label>
+                                        <input type="price" class="form-control form-control-sm" id="price" formControlName="price" required>
+                                        <div *ngIf="f.price.invalid && (f.price.dirty || f.price.touched || isSubmitted)" class="text-danger">
+                                            <div *ngIf="f.price.errors">Price is a required field, and it must be a number</div>
+                                        </div>
+                                    </div>
+                                    <div class="form-group mt-2">
+                                        <label for="serialNumber">Serial number</label>
+                                        <input type="text" class="form-control form-control-sm" id="serialNumber" formControlName="serialNumber"
+                                            required />
+                                        <div *ngIf="f.serialNumber.invalid && (f.serialNumber.dirty || f.serialNumber.touched || isSubmitted)"
+                                            class="text-danger">
+                                            <div *ngIf="f.serialNumber.errors">Serial number is a required field</div>
+                                        </div>
+                                    </div>
+                                    <div class="form-group mt-2">
+                                        <label for="dateOfPurchase">Date of Purchase</label>
+                                        <input type="date" class="form-control form-control-sm" id="dateOfPurchase"
+                                            formControlName="dateOfPurchase" required />
+                                        <div *ngIf="f.dateOfPurchase.invalid && (f.dateOfPurchase.dirty || f.dateOfPurchase.touched || isSubmitted)" class="text-danger">
+                                            <div *ngIf="f.dateOfPurchase.errors">Date is a required field</div>
+                                        </div>
+                                    </div>
+                                    <button type="submit" class="btn btn-primary mt-4"
+                                        style="background-color: #41A7C0;">Add</button>
+                                        <button type="button" class="btn btn-primary mt-4 float-end" style="background-color: #41A7C0;"
+                                        routerLink="/">Home page</button>
+                                </form>
+                            </div>
+                        </div>
+                    </div>
+            </div>
+        </div>
+    </div>
+        
+</body>

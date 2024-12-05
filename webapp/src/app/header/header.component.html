@@ -1,0 +1,39 @@
+<header style="font-size: 20px;">
+    <div class="container mb-2">
+        <a routerLink="/" class="logo">Tool Manager</a>
+        <nav>
+            <ul>
+                <li *ngIf="!msalService.instance.getAllAccounts().length">
+                    <a>Sign in, to access database!</a>
+                </li>
+
+                <li *ngIf="!msalService.instance.getAllAccounts().length">
+                    <button class="btn btn-primary" (click)="login()" style="color: white; background-color: #41A7C0">Login</button>
+                </li>
+
+                <li *ngIf="msalService.instance.getAllAccounts().length" class="search-wrapper">
+                    <app-search (searchEvent)="getSearchedItems($event)"></app-search>
+                </li>
+
+                <li *ngIf="msalService.instance.getAllAccounts().length">
+                    <div class="dropdown">
+                        <button class="btn btn-secondary dropdown-toggle" type="button" data-bs-toggle="dropdown" aria-expanded="false" style="background-color: #41A7C0">
+                            Select action
+                        </button>
+                        <div class="dropdown-menu" aria-labelledby="dropdownMenuButton">
+                            <button class="dropdown-item" routerLink="/addToList">Add element</button>
+                            <button class="dropdown-item" routerLink="/">Home page</button>
+                            <button class="dropdown-item" href="#">#smth else#</button>
+                        </div>
+                    </div>
+                </li>
+
+                <li *ngIf="msalService.instance.getAllAccounts().length">
+                    <button class="btn btn-primary" (click)="logout()" style="color: white; margin-left: 25%; background-color: #41A7C0">Logout</button>
+                </li>
+
+            </ul>
+        </nav>
+    </div>
+    <router-outlet></router-outlet>
+</header>
